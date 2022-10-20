@@ -1,10 +1,13 @@
 import express, {Request, Response} from "express";
-
+import bodyParser from 'body-parser'
+import {v1} from "uuid";
 const app = express();
 const port = process.env.PORT || 3001
 const products = [
-  {id: 1, title: 'tomato'}, {id: 2, title: 'apple'}
+  {id: v1(), title: 'tomato'}, {id: v1(), title: 'apple'}
 ]
+const parserMiddleWare = bodyParser({})
+app.use(parserMiddleWare)
 
 app.get('/products', (req: Request, res: Response) => {
   if (req.query.title) {
@@ -24,11 +27,32 @@ app.get('/products/:productTitle', (req: Request, res: Response) => {
 });
 
 app.delete('/products/:id', (req: Request, res: Response) => {
-  const newProducts = products.filter(product => product.id !== +req.params.id)
-  if(newProducts.length === products.length){
+  for (let i = 0; i < products.length; i++){
+    if(products[i].id === req.params.id){
+      products.splice(i , 1)
+      res.send(204)
+      return
+    }
     res.send(404)
+  }
+});
+
+app.post('/products', (req: Request, res: Response) => {
+  const newProducts = {
+    id: v1(),
+    title: req.body.title
+  }
+  products.push(newProducts)
+  res.json(201).send(newProducts)
+});
+
+app.put('/products/:id', (req: Request, res: Response) => {
+  const product = products.find(product => product.id === req.params.id)
+  if(product){
+    product.title = req.body.title
+    res.send(product)
   }else{
-    res.send(newProducts)
+    res.send(404)
   }
 
 });
