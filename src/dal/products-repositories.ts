@@ -26,5 +26,14 @@ export const productsRepositories = {
     }
     products.push(newProducts)
     return products
+  },
+  updateProducts(id: string, title: string){
+    const product = products.find(product => product.id === id)
+    if (product) {
+      product.title = title
+      return product
+    } else {
+      return 404
+    }
   }
 }

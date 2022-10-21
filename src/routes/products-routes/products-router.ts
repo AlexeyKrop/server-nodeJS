@@ -36,12 +36,6 @@ productsRouter.post('/', (req: Request, res: Response) => {
 });
 
 productsRouter.put('/:id', (req: Request, res: Response) => {
-  const product = products.find(product => product.id === req.params.id)
-  if (product) {
-    product.title = req.body.title
-    res.send(product)
-  } else {
-    res.send(404)
-  }
-
+  const updateProducts = productsRepositories.updateProducts(req.params.id, req.body.title)
+  res.send(updateProducts)
 })
