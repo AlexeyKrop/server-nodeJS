@@ -6,7 +6,6 @@ const products = [
 ]
 
 
-
 export const productsRouter = Router();
 productsRouter.get('/', (req: Request, res: Response) => {
   if (req.query.title) {
@@ -26,7 +25,14 @@ productsRouter.get('/:productTitle', (req: Request, res: Response) => {
 });
 
 productsRouter.delete('/:id', (req: Request, res: Response) => {
-  res.json(204).send(products.filter(product => product.id !== req.params.id))
+  for (let i = 0; i < products.length; i++) {
+    if (products[i].id === req.params.id) {
+      products.splice(i, 1)
+      res.send(204)
+      return
+    }
+  }
+  res.send(404)
 });
 
 productsRouter.post('/', (req: Request, res: Response) => {
@@ -40,10 +46,10 @@ productsRouter.post('/', (req: Request, res: Response) => {
 
 productsRouter.put('/:id', (req: Request, res: Response) => {
   const product = products.find(product => product.id === req.params.id)
-  if(product){
+  if (product) {
     product.title = req.body.title
     res.send(product)
-  }else{
+  } else {
     res.send(404)
   }
 
