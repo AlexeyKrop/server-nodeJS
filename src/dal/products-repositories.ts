@@ -18,5 +18,13 @@ export const productsRepositories = {
     } else {
       return 404
     }
+  },
+  createProducts(title: string){
+    const newProducts = {
+      id: v1(),
+      title: title
+    }
+    products.push(newProducts)
+    return products
   }
 }

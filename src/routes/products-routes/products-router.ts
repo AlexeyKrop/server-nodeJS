@@ -16,7 +16,7 @@ productsRouter.get('/', (req: Request, res: Response) => {
 
 productsRouter.get('/:productTitle', (req: Request, res: Response) => {
   const filteredProductsByTitle = productsRepositories.getFindProductsByTitleInParams(req.params.productTitle?.toString())
- res.send(filteredProductsByTitle)
+  res.send(filteredProductsByTitle)
 });
 
 productsRouter.delete('/:id', (req: Request, res: Response) => {
@@ -31,11 +31,7 @@ productsRouter.delete('/:id', (req: Request, res: Response) => {
 });
 
 productsRouter.post('/', (req: Request, res: Response) => {
-  const newProducts = {
-    id: v1(),
-    title: req.body.title
-  }
-  products.push(newProducts)
+  const newProducts = productsRepositories.createProducts(req.body.title)
   res.json(201).send(newProducts)
 });
 
