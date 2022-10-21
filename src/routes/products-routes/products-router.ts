@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express";
 import {v1} from "uuid";
+import {productsRepositories} from "../../dal/products-repositories";
 
 const products = [
   {id: v1(), title: 'tomato'}, {id: v1(), title: 'apple'}
@@ -7,21 +8,15 @@ const products = [
 
 
 export const productsRouter = Router();
+
 productsRouter.get('/', (req: Request, res: Response) => {
-  if (req.query.title) {
-    const searchStr = req.query.title.toString()
-    const product = products.filter(product => product.title.indexOf(searchStr) > -1)
-    res.send(product)
-  }
-  res.send(products);
+  const filteredProductsByTitle = productsRepositories.getFindProductsByTitleInQueryParams(req.query.title?.toString())
+  res.send(filteredProductsByTitle)
 });
+
 productsRouter.get('/:productTitle', (req: Request, res: Response) => {
-  const product = products.find((product) => product.title === req.params.productTitle)
-  if (product) {
-    res.send(product);
-  } else {
-    res.send(404)
-  }
+  const filteredProductsByTitle = productsRepositories.getFindProductsByTitleInParams(req.params.productTitle?.toString())
+ res.send(filteredProductsByTitle)
 });
 
 productsRouter.delete('/:id', (req: Request, res: Response) => {
