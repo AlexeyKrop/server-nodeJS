@@ -35,5 +35,14 @@ export const productsRepositories = {
     } else {
       return 404
     }
+  },
+  deleteProducts(id: string){
+    for (let i = 0; i < products.length; i++) {
+      if (products[i].id === id) {
+        products.splice(i, 1)
+        return true
+      }
+    }
+    return false
   }
 }
