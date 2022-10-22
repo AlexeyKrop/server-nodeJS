@@ -7,18 +7,18 @@ export const productsRouter = Router();
 
 const titleValidation = body('title').trim().isLength({min: 3, max: 20}).withMessage('title should be 3 or 20 characters');
 
-productsRouter.get('/', (req: Request, res: Response) => {
-  const filteredProductsByTitle = productsRepositories.getFindProductsByTitleInQueryParams(req.query.title?.toString())
+productsRouter.get('/', async (req: Request, res: Response) => {
+  const filteredProductsByTitle = await productsRepositories.getFindProductsByTitleInQueryParams(req.query.title?.toString())
   res.send(filteredProductsByTitle)
 });
 
-productsRouter.get('/:productTitle', (req: Request, res: Response) => {
-  const filteredProductsByTitle = productsRepositories.getFindProductsByTitleInParams(req.params.productTitle?.toString())
+productsRouter.get('/:productTitle', async (req: Request, res: Response) => {
+  const filteredProductsByTitle = await productsRepositories.getFindProductsByTitleInParams(req.params.productTitle?.toString())
   res.send(filteredProductsByTitle)
 });
 
-productsRouter.delete('/:id', (req: Request, res: Response) => {
-  const isDeleteProduct = productsRepositories.deleteProducts(req.params.id)
+productsRouter.delete('/:id', async (req: Request, res: Response) => {
+  const isDeleteProduct = await productsRepositories.deleteProducts(req.params.id)
   if(isDeleteProduct){
    const products = productsRepositories.getFindProductsByTitleInQueryParams('')
     res.send(products)
@@ -30,15 +30,15 @@ productsRouter.delete('/:id', (req: Request, res: Response) => {
 productsRouter.post('/',
   titleValidation,
   middlewares.inputValidationMiddleWare,
-  (req: Request, res: Response) => {
-  const newProducts = productsRepositories.createProducts(req.body.title)
-  res.json(201).send(newProducts)
+  async (req: Request, res: Response) => {
+  const newProducts = await productsRepositories.createProducts(req.body.title)
+  res.status(201).send(newProducts)
 });
 
 productsRouter.put('/:id',
   titleValidation,
   middlewares.inputValidationMiddleWare,
-  (req: Request, res: Response) => {
-  const updateProducts = productsRepositories.updateProducts(req.params.id, req.body.title)
+  async (req: Request, res: Response) => {
+  const updateProducts = await productsRepositories.updateProducts(req.params.id, req.body.title)
   res.send(updateProducts)
 })
