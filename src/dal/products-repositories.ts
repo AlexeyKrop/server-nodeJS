@@ -1,48 +1,38 @@
 import {v1} from "uuid";
+import {client} from "./db";
 
-const products = [
-  {id: v1(), title: 'tomato'}, {id: v1(), title: 'apple'}
-]
+const productsCollection = client.db("shop").collection("products")
 export const productsRepositories = {
   async getFindProductsByTitleInQueryParams(title: string | undefined) {
     if (title) {
-      const searchStr = title.toString()
-      return products.filter(product => product.title.indexOf(searchStr) > -1)
+      return productsCollection.find({title: {$regex: title}}).toArray()
+    } else {
+      return client.db("shop").collection("products").find({}).toArray();
     }
-    return products;
+
   },
   async getFindProductsByTitleInParams(title: string | undefined) {
-    const product = products.find((product) => product.title === title)
+    const product = await productsCollection.find({title: {$regex: title}})
     if (product) {
       return product
     } else {
       return 404
     }
   },
-  async createProducts(title: string){
+  async createProducts(title: string) {
     const newProducts = {
       id: v1(),
       title: title
     }
-    products.push(newProducts)
-    return products
+    const result = await productsCollection.insertOne(newProducts)
+    return newProducts
   },
-  async updateProducts(id: string, title: string){
-    const product = products.find(product => product.id === id)
-    if (product) {
-      product.title = title
-      return product
-    } else {
-      return 404
-    }
+  async updateProducts(id: string, title: string) {
+    const product = await productsCollection.updateOne({id}, {$set: title})
+    return product.matchedCount === 1
   },
-  async deleteProducts(id: string){
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
-        products.splice(i, 1)
-        return true
-      }
-    }
-    return false
+  async deleteProducts(id: string) {
+    const result = await productsCollection.deleteOne({id})
+    return result.deletedCount === 1
   }
 }
