@@ -4,11 +4,11 @@ import {productsCollection} from "./db";
 
 export const productsRepositories = {
   async getFindProductsByTitleInQueryParams(title: string | undefined) {
+    const filter: any = {}
     if (title) {
-      return productsCollection.find({title: {$regex: title}}).toArray()
-    } else {
-      return productsCollection.find({}).toArray();
+      filter.title = {$regex: title}
     }
+    return productsCollection.find(filter).toArray()
 
   },
   async getFindProductsByTitleInParams(title: string | undefined) {
