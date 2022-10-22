@@ -1,13 +1,13 @@
 import {v1} from "uuid";
-import {client} from "./db";
+import {productsCollection} from "./db";
 
-const productsCollection = client.db("shop").collection("products")
+
 export const productsRepositories = {
   async getFindProductsByTitleInQueryParams(title: string | undefined) {
     if (title) {
       return productsCollection.find({title: {$regex: title}}).toArray()
     } else {
-      return client.db("shop").collection("products").find({}).toArray();
+      return productsCollection.find({}).toArray();
     }
 
   },
