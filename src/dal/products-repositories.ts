@@ -1,4 +1,3 @@
-import {v1} from "uuid";
 import {productsCollection} from "./db";
 
 
@@ -19,11 +18,7 @@ export const productsRepositories = {
       return 404
     }
   },
-  async createProducts(title: string) {
-    const newProducts = {
-      id: v1(),
-      title: title
-    }
+  async createProducts(newProducts: any) {
     const result = await productsCollection.insertOne(newProducts)
     return newProducts
   },
